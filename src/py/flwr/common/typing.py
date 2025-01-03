@@ -122,22 +122,51 @@ class GetParametersRes:
     parameters: Parameters
 
 
+
+# Todo: 主要修改交互内容的格式
 @dataclass
 class FitIns:
     """Fit instructions for a client."""
-
+    # Todo: 在客户端上传和下载时，注意核对数据格式。
     parameters: Parameters
+    ckks_blocks : Union[list[bytes] ,None] # 密文块列表（fl），空（neo阶段）
     config: dict[str, Scalar]
+    enc_lines: Union[list,None]  # 加密的列位置。 list-每一层   list[0]=[1,2,3,4]加密1234行 
 
 
 @dataclass
 class FitRes:
     """Fit response from a client."""
-
+    # 客户端上传的数据，B正常，A加密一部分。
     status: Status
     parameters: Parameters
+    ckks_blocks : Union[list[bytes] ,None] # 密文块列表（fl），空（neo阶段）
     num_examples: int
     metrics: dict[str, Scalar]
+
+@dataclass
+class FitResNeo:
+    """协商阶段，客户端上传的数据格式"""
+    he_budget: int
+    Sens_layer: dict[str,dict[int,float]]
+    # str: layer_name  dict[int,float]是当前层的重要列，与对应的重要性得分。
+    # he_budget的值，就是len(dict[int,float]) 每层的加密预算相同。
+# @dataclass
+# class FitIns:
+#     """Fit instructions for a client."""
+
+#     parameters: Parameters
+#     config: dict[str, Scalar]
+
+
+# @dataclass
+# class FitRes:
+#     """Fit response from a client."""
+
+#     status: Status
+#     parameters: Parameters
+#     num_examples: int
+#     metrics: dict[str, Scalar]
 
 
 @dataclass
