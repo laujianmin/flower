@@ -160,9 +160,13 @@ def _recordset_to_fit_or_evaluate_ins_components(
     config_dict = _check_mapping_from_recordscalartype_to_scalar(config_record)
 
     # Todo: 解析ckks 和 enc_lines
-    ckks_blks = recordset.configs_records[f"{ins_str}.ckks_blocks"]
-
-    enc_lines = recordset.configs_records[f"{ins_str}.enc_lines"]
+    # 解析ckks_blocks
+    ckks_blks_record = recordset.configs_records[f"{ins_str}.ckks_blocks"]
+    ckks_blks = ckks_blks_record.get("ckks_blocks", None)
+    
+    # 解析enc_lines
+    enc_lines_record = recordset.configs_records[f"{ins_str}.enc_lines"]
+    enc_lines = enc_lines_record.get("enc_lines", None)
 
     return parameters, ckks_blks, config_dict, enc_lines
 
@@ -179,6 +183,21 @@ def _fit_or_evaluate_ins_to_recordset(
     recordset.configs_records[f"{ins_str}.config"] = ConfigsRecord(
         ins.config  # type: ignore
     )
+    # 处理ckks_blocks
+    if ins.ckks_blocks is not None:
+        recordset.configs_records[f"{ins_str}.ckks_blocks"] = ConfigsRecord(
+            {"ckks_blocks": ins.ckks_blocks}  # 将list[bytes]包装成字典
+        )
+    else:
+        recordset.configs_records[f"{ins_str}.ckks_blocks"] = ConfigsRecord({})
+
+    # 处理enc_lines
+    if ins.enc_lines is not None:
+        recordset.configs_records[f"{ins_str}.enc_lines"] = ConfigsRecord(
+            {"enc_lines": ins.enc_lines}  # 将list包装成字典
+        )
+    else:
+        recordset.configs_records[f"{ins_str}.enc_lines"] = ConfigsRecord({})
 
     return recordset
 
