@@ -159,7 +159,12 @@ def _recordset_to_fit_or_evaluate_ins_components(
     # pylint: disable-next=protected-access
     config_dict = _check_mapping_from_recordscalartype_to_scalar(config_record)
 
-    return parameters, config_dict
+    # Todo: 解析ckks 和 enc_lines
+    ckks_blks = recordset.configs_records[f"{ins_str}.ckks_blocks"]
+
+    enc_lines = recordset.configs_records[f"{ins_str}.enc_lines"]
+
+    return parameters, ckks_blks, config_dict, enc_lines
 
 
 def _fit_or_evaluate_ins_to_recordset(
@@ -199,13 +204,14 @@ def _extract_status_from_recordset(res_str: str, recordset: RecordSet) -> Status
 
 def recordset_to_fitins(recordset: RecordSet, keep_input: bool) -> FitIns:
     """Derive FitIns from a RecordSet object."""
-    parameters, config = _recordset_to_fit_or_evaluate_ins_components(
+    # 需要解析出来ckks 和加密lines
+    parameters,ckks_blks, config, enc_lines = _recordset_to_fit_or_evaluate_ins_components(
         recordset,
         ins_str="fitins",
         keep_input=keep_input,
     )
 
-    return FitIns(parameters=parameters, config=config)
+    return FitIns(parameters=parameters,ckks_blocks=ckks_blks ,config=config,enc_lines=enc_lines)
 
 
 def fitins_to_recordset(fitins: FitIns, keep_input: bool) -> RecordSet:
