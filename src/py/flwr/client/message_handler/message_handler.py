@@ -44,6 +44,8 @@ from flwr.proto.transport_pb2 import (  # pylint: disable=E0611
     ServerMessage,
 )
 
+from flwr.common import FitResNeo
+
 
 class UnexpectedServerMessage(Exception):
     """Exception indicating that the received message is unexpected."""
@@ -129,6 +131,8 @@ def handle_legacy_message_from_msgtype(
             client=client,
             fit_ins=recordset_to_fitins(message.content, keep_input=True),
         )
+        if (isinstance(fit_res, FitResNeo)):
+            return fit_res
         out_recordset = fitres_to_recordset(fit_res, keep_input=False)
     # Handle EvaluateIns
     elif message_type == MessageType.EVALUATE:

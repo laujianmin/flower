@@ -32,6 +32,7 @@ from flwr.common.typing import (
     EvaluateRes,
     FitIns,
     FitRes,
+    FitResNeo,
     GetParametersIns,
     GetParametersRes,
     GetPropertiesIns,
@@ -225,6 +226,23 @@ def _fit(self: Client, ins: FitIns) -> FitRes:
 
     # Train
     results = self.numpy_client.fit(parameters, ins.config)  # type: ignore
+    
+    '''
+    如果返回结果是了两项，说是是在协商阶段。
+    '''
+    if (len(results) == 2
+        and isinstance(results[0],Scalar)
+        and isinstance(results[1],dict)):
+        return FitResNeo(
+            he_budget= results[0],
+            Sens_layer= results[1]
+        )
+
+
+    '''
+    如果返回结果是了三项，说是是在训练阶段。
+    '''
+    # 下面是正常的参数传递
     if not (
         len(results) == 3
         and isinstance(results[0], list)

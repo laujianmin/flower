@@ -47,6 +47,7 @@ from .typing import EvaluateIns as EvaluateIns
 from .typing import EvaluateRes as EvaluateRes
 from .typing import FitIns as FitIns
 from .typing import FitRes as FitRes
+from .typing import FitResNeo as FitResNeo
 from .typing import GetParametersIns as GetParametersIns
 from .typing import GetParametersRes as GetParametersRes
 from .typing import GetPropertiesIns as GetPropertiesIns
@@ -79,6 +80,7 @@ __all__ = [
     "EventType",
     "FitIns",
     "FitRes",
+    "FitResNeo",
     "GRPC_MAX_MESSAGE_LENGTH",
     "GetParametersIns",
     "GetParametersRes",

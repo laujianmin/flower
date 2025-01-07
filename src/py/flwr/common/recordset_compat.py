@@ -279,7 +279,7 @@ def fitres_to_recordset(fitres: FitRes, keep_input: bool) -> RecordSet:
 
     # status
     recordset = _embed_status_into_recordset(res_str, fitres.status, recordset)
-
+    
     return recordset
 
 
