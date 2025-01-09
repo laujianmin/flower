@@ -31,6 +31,7 @@ from flwr.common.constant import MessageType, MessageTypeLegacy
 from flwr.common.recordset_compat import (
     evaluateres_to_recordset,
     fitres_to_recordset,
+    fitresneo_to_recordset,
     getparametersres_to_recordset,
     getpropertiesres_to_recordset,
     recordset_to_evaluateins,
@@ -131,9 +132,14 @@ def handle_legacy_message_from_msgtype(
             client=client,
             fit_ins=recordset_to_fitins(message.content, keep_input=True),
         )
-        if (isinstance(fit_res, FitResNeo)):
-            return fit_res
-        out_recordset = fitres_to_recordset(fit_res, keep_input=False)
+        '''
+        如果是协商消息直接返回。
+        Todo: 需要重新定义 包装为RecordSet 返回。
+        '''
+        if (isinstance(fit_res, FitResNeo)): 
+            out_recordset = fitresneo_to_recordset(fit_res)
+        else:
+            out_recordset = fitres_to_recordset(fit_res, keep_input=False)
     # Handle EvaluateIns
     elif message_type == MessageType.EVALUATE:
         evaluate_res = maybe_call_evaluate(

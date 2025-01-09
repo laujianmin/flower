@@ -31,7 +31,7 @@ NDArrays = list[NDArray]
 # ProtoBuf considers to be "Scalar Value Types", even though some of them arguably do
 # not conform to other definitions of what a scalar is. Source:
 # https://developers.google.com/protocol-buffers/docs/overview#scalar
-Scalar = Union[bool, bytes, float, int, str]
+Scalar = Union[bool, bytes, float, int, str,dict]  # 增加一个dict用来diy 主要是每层重要参数位置
 Value = Union[
     bool,
     bytes,
@@ -50,8 +50,8 @@ MetricsScalar = Union[int, float]
 MetricsScalarList = Union[list[int], list[float]]
 MetricsRecordValues = Union[MetricsScalar, MetricsScalarList]
 # Value types for common.ConfigsRecord
-ConfigsScalar = Union[MetricsScalar, str, bytes, bool]
-ConfigsScalarList = Union[MetricsScalarList, list[str], list[bytes], list[bool]]
+ConfigsScalar = Union[MetricsScalar, str, bytes, bool, dict]
+ConfigsScalarList = Union[MetricsScalarList, list[str], list[bytes], list[bool],list[dict]] # 增加一个dict用来diy 
 ConfigsRecordValues = Union[ConfigsScalar, ConfigsScalarList]
 
 Metrics = dict[str, Scalar]
@@ -139,7 +139,7 @@ class FitRes:
     """Fit response from a client."""
     # 客户端上传的数据，B正常，A加密一部分。
     status: Status
-    parameters: Parameters
+    parameters: Union[Parameters,None] # 
     ckks_blocks : Union[list[bytes] ,None] # 密文块列表（fl），空（neo阶段）
     num_examples: int
     metrics: dict[str, Scalar]
@@ -148,7 +148,7 @@ class FitRes:
 class FitResNeo:
     """协商阶段，客户端上传的数据格式"""
     he_budget: int
-    Sens_layer: dict[str,dict[int,float]]
+    Sens_layer: dict[str,list[dict]]
     # str: layer_name  dict[int,float]是当前层的重要列，与对应的重要性得分。
     # he_budget的值，就是len(dict[int,float]) 每层的加密预算相同。
 # @dataclass
