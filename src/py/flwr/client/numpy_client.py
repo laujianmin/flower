@@ -33,6 +33,7 @@ from flwr.common.typing import (
     FitIns,
     FitRes,
     FitResNeo,
+    Parameters,
     GetParametersIns,
     GetParametersRes,
     GetPropertiesIns,
@@ -227,29 +228,37 @@ def _fit(self: Client, ins: FitIns) -> FitRes:
     # Train
     results = self.numpy_client.fit(parameters, ins.config)  # type: ignore
     
-    '''
-    如果返回结果是了两项，说是是在协商阶段。
-    '''
-    if (len(results) == 2
-        and isinstance(results[0],Scalar)
-        and isinstance(results[1],dict)):
-        return FitResNeo(
-            he_budget= results[0],
-            Sens_layer= results[1]
-        )
-
-
-    '''
-    如果返回结果是了三项，说是是在训练阶段。
-    '''
+    # for res in results:
+    #     print(type(res))
     # 下面是正常的参数传递
+    # Todo: 客户端返回的训练结果在这里。 重点
     if not (
         len(results) == 3
-        and isinstance(results[0], list)
+        and (isinstance(results[0], list) or results[0] is None)
         and isinstance(results[1], int)
         and isinstance(results[2], dict)
     ):
         raise TypeError(EXCEPTION_MESSAGE_WRONG_RETURN_TYPE_FIT)
+    
+    '''
+    如果参数是None，说是是在协商阶段。
+    '''
+    if results[0] is None:
+        '''
+        协商阶段，返回的参数是None
+        '''
+        parameters = Parameters(tensors=[], tensor_type="neo")
+        he_budget = results[1]
+        # scores 在metrics里面
+        metrics = results[2]
+        return FitRes(
+            status=Status(code=Code.OK, message="Success"),
+            parameters=Parameters(tensors=[], tensor_type="neo"),
+            # ckks_blocks=None,
+            num_examples=he_budget,
+            metrics=metrics,
+        )
+
 
     # Return FitRes
     parameters_prime, num_examples, metrics = results

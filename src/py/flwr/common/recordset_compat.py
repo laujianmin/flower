@@ -162,14 +162,14 @@ def _recordset_to_fit_or_evaluate_ins_components(
 
     # Todo: 解析ckks 和 enc_lines
     # 解析ckks_blocks
-    ckks_blks_record = recordset.configs_records[f"{ins_str}.ckks_blocks"]
-    ckks_blks = ckks_blks_record.get("ckks_blocks", None)
+    # ckks_blks_record = recordset.configs_records[f"{ins_str}.ckks_blocks"]
+    # ckks_blks = ckks_blks_record.get("ckks_blocks", None)
     
-    # 解析enc_lines
-    enc_lines_record = recordset.configs_records[f"{ins_str}.enc_lines"]
-    enc_lines = enc_lines_record.get("enc_lines", None)
+    # # 解析enc_lines
+    # enc_lines_record = recordset.configs_records[f"{ins_str}.enc_lines"]
+    # enc_lines = enc_lines_record.get("enc_lines", None)
 
-    return parameters, ckks_blks, config_dict, enc_lines
+    return parameters, config_dict
 
 
 def _fit_or_evaluate_ins_to_recordset(
@@ -185,20 +185,20 @@ def _fit_or_evaluate_ins_to_recordset(
         ins.config  # type: ignore
     )
     # 处理ckks_blocks
-    if ins.ckks_blocks is not None:
-        recordset.configs_records[f"{ins_str}.ckks_blocks"] = ConfigsRecord(
-            {"ckks_blocks": ins.ckks_blocks}  # 将list[bytes]包装成字典
-        )
-    else:
-        recordset.configs_records[f"{ins_str}.ckks_blocks"] = ConfigsRecord({})
+    # if ins.ckks_blocks is not None:
+    #     recordset.configs_records[f"{ins_str}.ckks_blocks"] = ConfigsRecord(
+    #         {"ckks_blocks": ins.ckks_blocks}  # 将list[bytes]包装成字典
+    #     )
+    # else:
+    #     recordset.configs_records[f"{ins_str}.ckks_blocks"] = ConfigsRecord({})
 
-    # 处理enc_lines
-    if ins.enc_lines is not None:
-        recordset.configs_records[f"{ins_str}.enc_lines"] = ConfigsRecord(
-            {"enc_lines": ins.enc_lines}  # 将list包装成字典
-        )
-    else:
-        recordset.configs_records[f"{ins_str}.enc_lines"] = ConfigsRecord({})
+    # # 处理enc_lines
+    # if ins.enc_lines is not None:
+    #     recordset.configs_records[f"{ins_str}.enc_lines"] = ConfigsRecord(
+    #         {"enc_lines": ins.enc_lines}  # 将list包装成字典
+    #     )
+    # else:
+    #     recordset.configs_records[f"{ins_str}.enc_lines"] = ConfigsRecord({})
 
     return recordset
 
@@ -225,13 +225,13 @@ def _extract_status_from_recordset(res_str: str, recordset: RecordSet) -> Status
 def recordset_to_fitins(recordset: RecordSet, keep_input: bool) -> FitIns:
     """Derive FitIns from a RecordSet object."""
     # 需要解析出来ckks 和加密lines
-    parameters,ckks_blks, config, enc_lines = _recordset_to_fit_or_evaluate_ins_components(
+    parameters,config = _recordset_to_fit_or_evaluate_ins_components(
         recordset,
         ins_str="fitins",
         keep_input=keep_input,
     )
 
-    return FitIns(parameters=parameters,ckks_blocks=ckks_blks ,config=config,enc_lines=enc_lines)
+    return FitIns(parameters=parameters,config=config)
 
 
 def fitins_to_recordset(fitins: FitIns, keep_input: bool) -> RecordSet:
@@ -253,7 +253,8 @@ def recordset_to_fitres(recordset: RecordSet, keep_input: bool) -> FitRes:
     # pylint: disable-next=protected-access
     metrics = _check_mapping_from_recordscalartype_to_scalar(configs_record)
     status = _extract_status_from_recordset(ins_str, recordset)
-
+    # Todo: 需要解析ckks_blocks 如果存在，就赋值，否则就是None
+    # ckks_blocks = recordset.configs_records[f"{ins_str}.ckks_blocks"].get("ckks_blocks", None)
     return FitRes(
         status=status, parameters=parameters, num_examples=num_examples, metrics=metrics
     )
@@ -283,68 +284,7 @@ def fitres_to_recordset(fitres: FitRes, keep_input: bool) -> RecordSet:
     
     return recordset
 
-def recordset_to_fitresneo(recordset: RecordSet) -> FitResNeo:
-    """Convert RecordSet back to FitResNeo."""
-    # 获取 he_budget
-    he_budget = recordset.configs_records["fitresneo.he_budget"].get("value", 0)
-    
-    # 获取 Sens_layer
-    sens_layer_dict = recordset.configs_records["fitresneo.sens_layer"].get("layers", {})
-    sens_layer = {}
-    for layer_name, layer_data in sens_layer_dict.items():
-        columns = layer_data["columns"]
-        scores = layer_data["scores"]
-        sens_layer[layer_name] = dict(zip(columns, scores))
-    
-    # 获取 CKKS 密文数据
-    # ckks_blocks = []
-    # if "fitresneo.ckks_blocks" in recordset.parameters_records:
-    #     ckks_blocks_dict = recordset.parameters_records["fitresneo.ckks_blocks"]
-    #     for key in sorted(ckks_blocks_dict.keys()):
-    #         ckks_blocks.append(ckks_blocks_dict[key].data)
-    
-    return FitResNeo(
-        he_budget=he_budget,
-        Sens_layer=sens_layer,
-        # ckks_blocks=ckks_blocks
-    )
 
-def fitresneo_to_recordset(fitresneo: FitResNeo) -> RecordSet:
-    """Convert FitResNeo to RecordSet, supporting complex data types."""
-    recordset = RecordSet()
-    
-    # 处理 he_budget（标量值，放入 ConfigsRecord）
-    recordset.configs_records["fitresneo.he_budget"] = ConfigsRecord(
-        {"value": fitresneo.he_budget}
-    )
-    
-    # 处理 Sens_layer（标量值，放入 ConfigsRecord）
-    sens_layer_dict = fitresneo.Sens_layer
-    # for layer_name, layer_data in fitresneo.Sens_layer.items():
-    #     print(layer_data)
-    #     sens_layer_dict[layer_name] = {
-    #         "line": list(layer_data.keys()),
-    #         "score": list(layer_data.values())
-    #     }
-    recordset.configs_records["fitresneo.sens_layer"] = ConfigsRecord(
-        {"sens_layers": sens_layer_dict}
-    )
-    
-    # 处理密文数据（放入 ParametersRecord）
-    # if hasattr(fitresneo, "ckks_blocks") and fitresneo.ckks_blocks is not None:
-    #     ckks_blocks_dict = OrderedDict()
-    #     for i, block in enumerate(fitresneo.ckks_blocks):
-    #         ckks_blocks_dict[f"ckks_block_{i}"] = Array(
-    #             dtype="bytes",  # 密文数据通常以字节形式存储
-    #             shape=[len(block)],  # 数据长度
-    #             stype="raw",  # 原始数据
-    #             data=block  # 密文数据
-    #         )
-    #     recordset.parameters_records["fitresneo.ckks_blocks"] = ParametersRecord(
-    #         ckks_blocks_dict
-    #     )
-    
-    return recordset
 
 def recordset_to_evaluateins(recordset: RecordSet, keep_input: bool) -> EvaluateIns:
     """Derive EvaluateIns from a RecordSet object."""
