@@ -17,7 +17,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, Optional, Union,Dict,List
 
 import numpy as np
 import numpy.typing as npt
@@ -51,8 +51,10 @@ MetricsScalarList = Union[list[int], list[float]]
 MetricsRecordValues = Union[MetricsScalar, MetricsScalarList]
 # Value types for common.ConfigsRecord
 ConfigsScalar = Union[MetricsScalar, str, bytes, bool, dict]
-ConfigsScalarList = Union[MetricsScalarList, list[str], list[bytes], list[bool],list[dict]] # 增加一个dict用来diy 
-ConfigsRecordValues = Union[ConfigsScalar, ConfigsScalarList]
+# 支持更复杂的嵌套字典类型
+NestedDict = Dict[str, Union[MetricsScalar, List[Dict[str, MetricsScalar]]]]
+ConfigsScalarList = Union[MetricsScalarList, list[str], list[bytes], list[bool], list[dict], list[NestedDict]]  # 添加 NestedDict
+ConfigsRecordValues = Union[ConfigsScalar, ConfigsScalarList, NestedDict]  # 添加 NestedDict 
 
 Metrics = dict[str, Scalar]
 MetricsAggregationFn = Callable[[list[tuple[int, Metrics]]], Metrics]

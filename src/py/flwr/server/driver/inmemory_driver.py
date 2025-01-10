@@ -169,6 +169,7 @@ class InMemoryDriver(Driver):
         # Pull messages
         end_time = time.time() + (timeout if timeout is not None else 0.0)
         ret: list[Message] = []
+        # print("inmemory_driver.py <send_and_receive>1: ",msg_ids)
         while timeout is None or time.time() < end_time:
             res_msgs = self.pull_messages(msg_ids)
             ret.extend(res_msgs)

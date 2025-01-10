@@ -74,6 +74,7 @@ class DriverClientProxy(ClientProxy):
         # Ins to RecordSet
         out_recordset = compat.fitins_to_recordset(ins, keep_input=True)
         # Fetch response
+        # Todo: 接受fit_res
         in_recordset = self._send_receive_recordset(
             out_recordset, MessageType.TRAIN, timeout, group_id
         )
@@ -121,13 +122,14 @@ class DriverClientProxy(ClientProxy):
 
         # Send message and wait for reply
         messages = list(self.driver.send_and_receive(messages=[message]))
-
+        print("messages <_send_receive_recordset>2: ",messages)
         # A single reply is expected
         if len(messages) != 1:
             raise ValueError(f"Expected one Message but got: {len(messages)}")
 
         # Only messages without errors can be handled beyond these point
         msg: Message = messages[0]
+        # Todo: 这里需要处理错误
         if msg.has_error():
             raise ValueError(
                 f"Message contains an Error (reason: {msg.error.reason}). "

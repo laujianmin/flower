@@ -17,7 +17,7 @@
 
 from typing import Optional, get_args
 
-from flwr.common.typing import ConfigsRecordValues, ConfigsScalar
+from flwr.common.typing import ConfigsRecordValues, ConfigsScalar,MetricsScalar
 
 from .typeddict import TypedDict
 
@@ -53,6 +53,18 @@ def _check_value(value: ConfigsRecordValues) -> None:
                     "All values in a list must be of the same valid type. "
                     f"One of {ConfigsScalar}."
                 )
+    elif isinstance(value, dict):
+        # 检查字典中的每个值是否符合预期类型
+        for k, v in value.items():
+            if isinstance(v, list):
+                # 如果是列表，检查列表中的每个元素
+                if len(v) > 0 and isinstance(v[0], dict):
+                    for item in v:
+                        for key, val in item.items():
+                            if not isinstance(val, get_args(MetricsScalar)):
+                                raise TypeError(
+                                    f"Invalid type for nested dictionary value: {type(val)}"
+                                )
     else:
         is_valid(value)
 
