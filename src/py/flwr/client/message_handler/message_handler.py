@@ -141,7 +141,7 @@ def handle_legacy_message_from_msgtype(
         # else:
         # print("fit_res <maybe_call_fit>: ",fit_res)
         out_recordset = fitres_to_recordset(fit_res, keep_input=False)
-        print("out_recordset <maybe_call_fit>: ",out_recordset.metrics_records,out_recordset.configs_records)
+        # print("out_recordset <maybe_call_fit>: ",out_recordset.metrics_records,out_recordset.configs_records)
     # Handle EvaluateIns
     elif message_type == MessageType.EVALUATE:
         evaluate_res = maybe_call_evaluate(

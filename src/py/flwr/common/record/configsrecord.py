@@ -126,6 +126,8 @@ class ConfigsRecord(TypedDict[str, ConfigsRecordValues]):
     ) -> None:
 
         super().__init__(_check_key, _check_value)
+        # TODO configrecord 
+        # print("configs_dict <__init__>: ",configs_dict)
         if configs_dict:
             for k in list(configs_dict.keys()):
                 self[k] = configs_dict[k]

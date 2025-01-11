@@ -122,7 +122,7 @@ class DriverClientProxy(ClientProxy):
 
         # Send message and wait for reply
         messages = list(self.driver.send_and_receive(messages=[message]))
-        print("messages <_send_receive_recordset>2: ",messages)
+        # print("messages <_send_receive_recordset>2: ",messages)
         # A single reply is expected
         if len(messages) != 1:
             raise ValueError(f"Expected one Message but got: {len(messages)}")
