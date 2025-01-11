@@ -141,6 +141,8 @@ def _validate_run_config(config_dict: dict[str, Any], errors: list[str]) -> None
     for key, value in config_dict.items():
         if isinstance(value, dict):
             _validate_run_config(config_dict[key], errors)
+        elif isinstance(value, list):
+            print("list <_validate_run_config>: ",value)
         elif not isinstance(value, get_args(UserConfigValue)):
             raise ValueError(
                 f"The value for key {key} needs to be of type `int`, `float`, "
