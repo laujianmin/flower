@@ -130,7 +130,7 @@ class GetParametersRes:
 class FitIns:
     """Fit instructions for a client."""
     # Todo: 在客户端上传和下载时，注意核对数据格式。
-    parameters: Parameters
+    parameters: Union[Parameters,None]
     # ckks_blocks : Union[list[bytes] ,None] # 密文块列表（fl），空（neo阶段）
     config: dict[str, Scalar]
     # enc_lines: Union[list,None]  # 加密的列位置。 list-每一层   list[0]=[1,2,3,4]加密1234行 

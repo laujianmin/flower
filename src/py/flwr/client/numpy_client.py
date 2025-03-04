@@ -231,7 +231,7 @@ def _fit(self: Client, ins: FitIns) -> FitRes:
     # for res in results:
     #     print(type(res))
     # 下面是正常的参数传递
-    # Todo: 客户端返回的训练结果在这里。 重点
+    # Todo: 【客户端返回给服务器】的训练结果在这里。 重点
     if not (
         len(results) == 3
         and (isinstance(results[0], list) or results[0] is None)

@@ -132,6 +132,7 @@ def _check_mapping_from_recordscalartype_to_scalar(
     """Check mapping `common.*RecordValues` into `common.Scalar` is possible."""
     for value in record_data.values():
         if not isinstance(value, get_args(Scalar)):
+            print(value,record_data)
             raise TypeError(
                 "There is not a 1:1 mapping between `common.Scalar` types and those "
                 "supported in `common.ConfigsRecordValues` or "
