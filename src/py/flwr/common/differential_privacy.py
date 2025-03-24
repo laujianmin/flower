@@ -69,7 +69,11 @@ def compute_clip_model_update(
     """Compute model update (param1 - param2) and clip it.
 
     Then add the clipped value to param1."""
-    model_update = [np.subtract(x, y) for (x, y) in zip(param1, param2)]
+    if param2:
+        model_update = [np.subtract(x, y) for (x, y) in zip(param1, param2)] 
+    else:
+        model_update = param1
+    # model_update = [np.subtract(x, y) for (x, y) in zip(param1, param2)]
     clip_inputs_inplace(model_update, clipping_norm)
 
     for i, _ in enumerate(param2):
