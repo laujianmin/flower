@@ -31,7 +31,7 @@ NDArrays = list[NDArray]
 # ProtoBuf considers to be "Scalar Value Types", even though some of them arguably do
 # not conform to other definitions of what a scalar is. Source:
 # https://developers.google.com/protocol-buffers/docs/overview#scalar
-Scalar = Union[bool, bytes, float, int, str,dict]  # 增加一个dict用来diy 主要是每层重要参数位置
+Scalar = Union[bool, bytes, float, int, str,dict]
 Value = Union[
     bool,
     bytes,
@@ -51,10 +51,9 @@ MetricsScalarList = Union[list[int], list[float]]
 MetricsRecordValues = Union[MetricsScalar, MetricsScalarList]
 # Value types for common.ConfigsRecord
 ConfigsScalar = Union[MetricsScalar, str, bytes, bool, dict]
-# 支持更复杂的嵌套字典类型
 NestedDict = Dict[str, Union[MetricsScalar, List[Dict[str, MetricsScalar]]]]
-ConfigsScalarList = Union[MetricsScalarList, list[str], list[bytes], list[bool], list[dict], list[NestedDict]]  # 添加 NestedDict
-ConfigsRecordValues = Union[ConfigsScalar, ConfigsScalarList, NestedDict]  # 添加 NestedDict 
+ConfigsScalarList = Union[MetricsScalarList, list[str], list[bytes], list[bool], list[dict], list[NestedDict]]
+ConfigsRecordValues = Union[ConfigsScalar, ConfigsScalarList, NestedDict] 
 
 Metrics = dict[str, Scalar]
 MetricsAggregationFn = Callable[[list[tuple[int, Metrics]]], Metrics]
@@ -125,34 +124,28 @@ class GetParametersRes:
 
 
 
-# Todo: 主要修改交互内容的格式
+# TODO: Main changes to interaction content format
 @dataclass
 class FitIns:
     """Fit instructions for a client."""
-    # Todo: 在客户端上传和下载时，注意核对数据格式。
+    # TODO: Verify data format on client upload and download.
     parameters: Union[Parameters,None]
-    # ckks_blocks : Union[list[bytes] ,None] # 密文块列表（fl），空（neo阶段）
-    config: dict[str, Scalar]
-    # enc_lines: Union[list,None]  # 加密的列位置。 list-每一层   list[0]=[1,2,3,4]加密1234行 
+    config: dict[str, Scalar] 
 
 
 @dataclass
 class FitRes:
     """Fit response from a client."""
-    # 客户端上传的数据，B正常，A加密一部分。
     status: Status
-    parameters: Union[Parameters,None] # 
-    # ckks_blocks : Union[list[bytes] ,None] # 密文块列表（fl），空（neo阶段）
+    parameters: Union[Parameters,None]
     num_examples: int
     metrics: dict[str, Scalar]
 
 @dataclass
 class FitResNeo:
-    """协商阶段，客户端上传的数据格式"""
+    """Negotiation phase: client upload data format."""
     he_budget: int
     Sens_layer: dict[str,list[dict]]
-    # str: layer_name  dict[int,float]是当前层的重要列，与对应的重要性得分。
-    # he_budget的值，就是len(dict[int,float]) 每层的加密预算相同。
 # @dataclass
 # class FitIns:
 #     """Fit instructions for a client."""

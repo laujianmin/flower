@@ -104,10 +104,7 @@ class DeprecatedRunInfoStore:
 
     def update_context(self, run_id: int, context: Context) -> None:
         """Update run context."""
-        '''
-        这里需要处理run_config 的修改,动态分配每个client的lora_rank，
-        因此注释掉这个。
-        '''
+        # run_config modification and per-client lora_rank allocation handled elsewhere; disabled below
         # if context.run_config != self.run_infos[run_id].initial_run_config:
         #     raise ValueError(
         #         "The `run_config` field of the `Context` object cannot be "

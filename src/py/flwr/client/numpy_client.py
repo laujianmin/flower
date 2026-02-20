@@ -230,8 +230,7 @@ def _fit(self: Client, ins: FitIns) -> FitRes:
     
     # for res in results:
     #     print(type(res))
-    # 下面是正常的参数传递
-    # Todo: 【客户端返回给服务器】的训练结果在这里。 重点
+    # TODO: Training results returned from client to server are handled here.
     if not (
         len(results) == 3
         and (isinstance(results[0], list) or results[0] is None)
@@ -240,16 +239,9 @@ def _fit(self: Client, ins: FitIns) -> FitRes:
     ):
         raise TypeError(EXCEPTION_MESSAGE_WRONG_RETURN_TYPE_FIT)
     
-    '''
-    如果参数是None，说是是在协商阶段。
-    '''
     if results[0] is None:
-        '''
-        协商阶段，返回的参数是None
-        '''
         parameters = Parameters(tensors=[], tensor_type="neo")
         he_budget = results[1]
-        # scores 在metrics里面
         metrics = results[2]
         return FitRes(
             status=Status(code=Code.OK, message="Success"),

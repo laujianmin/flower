@@ -166,8 +166,8 @@ def flatten_dict(
             items.extend(flatten_dict(v, parent_key=new_key).items())
         elif isinstance(v, get_args(UserConfigValue)):
             items.append((new_key, cast(UserConfigValue, v)))
-        elif isinstance(v, list):  # 支持list 用来处理lora_r
-            items.append((new_key, v)) # 不进行cast
+        elif isinstance(v, list):
+            items.append((new_key, v))
         else:
             print("flatten_dict <else>: ",v)
             raise ValueError(

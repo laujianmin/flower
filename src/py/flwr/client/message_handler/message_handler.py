@@ -131,11 +131,8 @@ def handle_legacy_message_from_msgtype(
             client=client,
             fit_ins=recordset_to_fitins(message.content, keep_input=True),
         )
-        '''
-        如果是协商消息直接返回。
-        此处直接接受来自客户端的消息，在 numpy_client.py 中处理过的。
-        Todo: 需要重新定义 包装为RecordSet 返回。
-        '''
+        # Negotiation messages return directly; client message handled in numpy_client.py.
+        # TODO: Redefine and wrap as RecordSet for return.
         # if (isinstance(fit_res, FitResNeo)): 
         #     out_recordset = fitresneo_to_recordset(fit_res)
         # else:
@@ -153,7 +150,7 @@ def handle_legacy_message_from_msgtype(
         raise ValueError(f"Invalid message type: {message_type}")
 
     # Return Message
-    return message.create_reply(out_recordset,ttl=30) # 设置ttl=30秒 测试
+    return message.create_reply(out_recordset,ttl=30)
 
 
 def _reconnect(

@@ -74,7 +74,7 @@ class DriverClientProxy(ClientProxy):
         # Ins to RecordSet
         out_recordset = compat.fitins_to_recordset(ins, keep_input=True)
         # Fetch response
-        # Todo: 接受fit_res
+        # TODO: Handle fit_res
         in_recordset = self._send_receive_recordset(
             out_recordset, MessageType.TRAIN, timeout, group_id
         )
@@ -129,7 +129,7 @@ class DriverClientProxy(ClientProxy):
 
         # Only messages without errors can be handled beyond these point
         msg: Message = messages[0]
-        # Todo: 这里需要处理错误
+        # TODO: Handle errors here
         if msg.has_error():
             raise ValueError(
                 f"Message contains an Error (reason: {msg.error.reason}). "

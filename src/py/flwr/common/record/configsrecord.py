@@ -54,10 +54,8 @@ def _check_value(value: ConfigsRecordValues) -> None:
                     f"One of {ConfigsScalar}."
                 )
     elif isinstance(value, dict):
-        # 检查字典中的每个值是否符合预期类型
         for k, v in value.items():
             if isinstance(v, list):
-                # 如果是列表，检查列表中的每个元素
                 if len(v) > 0 and isinstance(v[0], dict):
                     for item in v:
                         for key, val in item.items():

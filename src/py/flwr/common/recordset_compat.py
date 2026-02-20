@@ -161,12 +161,9 @@ def _recordset_to_fit_or_evaluate_ins_components(
     # pylint: disable-next=protected-access
     config_dict = _check_mapping_from_recordscalartype_to_scalar(config_record)
 
-    # Todo: 解析ckks 和 enc_lines
-    # 解析ckks_blocks
+    # TODO: Parse ckks and enc_lines
     # ckks_blks_record = recordset.configs_records[f"{ins_str}.ckks_blocks"]
     # ckks_blks = ckks_blks_record.get("ckks_blocks", None)
-    
-    # # 解析enc_lines
     # enc_lines_record = recordset.configs_records[f"{ins_str}.enc_lines"]
     # enc_lines = enc_lines_record.get("enc_lines", None)
 
@@ -185,18 +182,15 @@ def _fit_or_evaluate_ins_to_recordset(
     recordset.configs_records[f"{ins_str}.config"] = ConfigsRecord(
         ins.config  # type: ignore
     )
-    # 处理ckks_blocks
     # if ins.ckks_blocks is not None:
     #     recordset.configs_records[f"{ins_str}.ckks_blocks"] = ConfigsRecord(
-    #         {"ckks_blocks": ins.ckks_blocks}  # 将list[bytes]包装成字典
+    #         {"ckks_blocks": ins.ckks_blocks}
     #     )
     # else:
     #     recordset.configs_records[f"{ins_str}.ckks_blocks"] = ConfigsRecord({})
-
-    # # 处理enc_lines
     # if ins.enc_lines is not None:
     #     recordset.configs_records[f"{ins_str}.enc_lines"] = ConfigsRecord(
-    #         {"enc_lines": ins.enc_lines}  # 将list包装成字典
+    #         {"enc_lines": ins.enc_lines}
     #     )
     # else:
     #     recordset.configs_records[f"{ins_str}.enc_lines"] = ConfigsRecord({})
@@ -225,7 +219,6 @@ def _extract_status_from_recordset(res_str: str, recordset: RecordSet) -> Status
 
 def recordset_to_fitins(recordset: RecordSet, keep_input: bool) -> FitIns:
     """Derive FitIns from a RecordSet object."""
-    # 需要解析出来ckks 和加密lines
     parameters,config = _recordset_to_fit_or_evaluate_ins_components(
         recordset,
         ins_str="fitins",
@@ -254,7 +247,7 @@ def recordset_to_fitres(recordset: RecordSet, keep_input: bool) -> FitRes:
     # pylint: disable-next=protected-access
     metrics = _check_mapping_from_recordscalartype_to_scalar(configs_record)
     status = _extract_status_from_recordset(ins_str, recordset)
-    # Todo: 需要解析ckks_blocks 如果存在，就赋值，否则就是None
+    # TODO: Parse ckks_blocks if present, otherwise None
     # ckks_blocks = recordset.configs_records[f"{ins_str}.ckks_blocks"].get("ckks_blocks", None)
     return FitRes(
         status=status, parameters=parameters, num_examples=num_examples, metrics=metrics
